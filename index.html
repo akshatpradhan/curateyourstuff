@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html ng-app="myapp" lang="en">
   <head>
     <meta charset="utf-8">
     <title>Bootstrap, from Twitter</title>
@@ -15,24 +15,17 @@
       }
     </style>
 
-    <script type='text/javascript' src='https://cdn.firebase.com/js/client/1.0.2/firebase.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.1/angular.min.js'></script>
+    <script src='https://cdn.firebase.com/v0/firebase.js'></script>
+    <script src='https://cdn.firebase.com/libs/angularfire/0.6.0/angularfire.min.js'></script>
     <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js'></script>
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
       <script src="../assets/js/html5shiv.js"></script>
     <![endif]-->
-
-    <!-- Fav and touch icons -->
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">
-      <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
-                    <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">
-                                   <link rel="shortcut icon" href="../assets/ico/favicon.png">
   </head>
 
-  <body>
-
-
+  <body ng-controller="MyController">
     <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
@@ -55,42 +48,44 @@
 
     <div class="container">
       <div class="row">
-        <div class="span7 offset3">
-          <input type='text' id='nameInput' placeholder='Name'>
-          <input type='text' id='messageInput' placeholder='Message'>
+        <div class="span11 offset1">
+        <input type="text" ng-model="name" placeholder="Name">
+        <input type="text" ng-model="msg" ng-keydown="addMessage($event)" placeholder="Message...">
 
-<ul class="thumbnails">
-  <li class="span4">
-    <a href="#" class="thumbnail">
-    <div id='messagesDiv'>
-    </div>
-    </a>
-  </li>
-  ...
-</ul>
+        <div id='messagesDiv'>
+          <div ng-repeat="msg in messages">
+            <ul class="thumbnails">
+              <li class="span4">
+                <div class="thumbnail">
+                  <img data-src="holder.js/300x200" alt="300x200" style="width: 300px; height: 200px;">
+                  <div class="caption">
+                    <h3>{{msg.from}}</h3>
 
-          <script>
-            var myDataRef = new Firebase('https://blinding-fire-4569.firebaseio.com');
+                    <p>{{msg.body}}</p>
+                    <p><a href="#" class="btn btn-primary">Action</a> <a href="#" class="btn">Action</a></p>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
 
-              $('#messageInput').keypress(function (e) {
-                if (e.keyCode == 13) {
-                  var name = $('#nameInput').val();
-                  var text = $('#messageInput').val();
-                  myDataRef.push({name: name, text: text});
-                  $('#messageInput').val('');
-                }
-              });
-              myDataRef.on('child_added', function(snapshot) {
-                var message = snapshot.val();
-                displayChatMessage(message.name, message.text);
-              });
 
-              function displayChatMessage(name, text) {
-                var test = $('<div/>').text(text).prepend($('<em/>').text(name+': ')).appendTo($('#messagesDiv'));
-                $('.thumbnails').append(test);
-                $('#messagesDiv')[0].scrollTop = $('#messagesDiv')[0].scrollHeight;
-              };
-          </script>
+        <div id="messagesDiv">
+          <div ng-repeat="msg in messages"><em>{{msg.from}}</em>: {{msg.body}}</div>
+        </div>
+        <script>
+          var app = angular.module("myapp", ["firebase"]);
+          function MyController($scope, $firebase) {
+            var ref = new Firebase("https://blinding-fire-4569.firebaseio.com");
+            $scope.messages = $firebase(ref);
+            $scope.addMessage = function(e) {
+              if (e.keyCode != 13) return;
+                $scope.messages.$add({from: $scope.name, body: $scope.msg});
+                $scope.msg = "";
+            }
+          }
+        </script>
         </div>
       </div>
 
