@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html ng-app="myapp" lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Bootstrap, from Twitter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+    <style>
+      body {
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+      }
+    </style>
+
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.1/angular.min.js'></script>
+    <script src='https://cdn.firebase.com/v0/firebase.js'></script>
+    <script src='https://cdn.firebase.com/libs/angularfire/0.6.0/angularfire.min.js'></script>
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js'></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="../assets/js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <div class="row">
+            <div class="span4 offset5">
+              <a class="brand" href="#">Curate your stuff</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row" ng-controller="MyController">
+      <div class="span8 offset4">
+        <p class="lead">
+          A simple way to curate your stuff to share with others
+        </p>
+      </div>
+        <div class="span11 offset1">
+          <form class="form-inline" ng-submit="addMessage()">
+            <input type="text" ng-model="name" placeholder="Blender">
+            <input type="text" ng-model="msg" placeholder="http://ecx.images-amazon.com/images/I/31Z1MAH5AVL._SY300_.jpg">
+            <button class="btn btn-primary" type="submit">
+              Add your favorite item
+            </button>
+          </form>
+        </div>
+        <div class="span12">
+
+
+
+          <div id='messagesDiv'>
+            <div ng-repeat="(id, msg) in messages">
+              <ul class="thumbnails">
+                <li class="span4">
+                  <div class="thumbnail">
+                    <div class="row">
+                      <div class="span2">
+                        <a href="{{msg.body}}"><h2 class="muted">{{msg.from}}</h2></a>
+                      </div>
+                      <div class="span1 pull-right">
+                        <button class="btn btn-info btn-small"><i class="icon-edit icon-white"></i></button>
+                        <button type="submit" ng-click="removeMessage(id)" class="btn btn-danger btn-small"><i class="icon-trash icon-white"></i></button>
+                      </div>
+                    </div>
+                    <img src="{{msg.body}}" alt="300x200" style="width: 300px; height: 200px;">
+                    <div class="caption">
+                      <p></p>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <script>
+          var app = angular.module("myapp", ["firebase"]);
+          function MyController($scope, $firebase) {
+            var ref = new Firebase("https://blinding-fire-4569.firebaseio.com");
+            $scope.messages = $firebase(ref);
+            $scope.addMessage = function() {
+              $scope.messages.$add({
+                from: $scope.name, body: $scope.msg
+              });
+              $scope.msg = "";
+            };
+
+            $scope.removeMessage = function(id) {
+              $scope.messages.$remove(id);
+            };
+
+          }
+        </script>
+        </div>
+      </div>
+
+
+    </div> <!-- /container -->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+  </body>
+</html>
