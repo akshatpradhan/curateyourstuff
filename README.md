@@ -4,9 +4,7 @@ curateyourstuff
 A simple way to curate your stuff to share with others.
 
 ### install and run ###
-git checkout git@github.com:akshatpradhan/curateyourstuff.git
-
-`cd curateyourstuff && open index.html`
+`git checkout git@github.com:akshatpradhan/curateyourstuff.git && cd curateyourstuff && open index.html`
 
 
 ![Screenshot](https://raw.github.com/akshatpradhan/curateyourstuff/master/curateyourstuff.png)
