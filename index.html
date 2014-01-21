@@ -25,65 +25,79 @@
     <![endif]-->
   </head>
 
-  <body ng-controller="MyController">
-    <div class="navbar navbar-inverse navbar-fixed-top">
+  <body>
+    <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
-          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="brand" href="#">Project name</a>
-          <div class="nav-collapse collapse">
-            <ul class="nav">
-              <li class="active"><a href="#">Home</a></li>
-              <li><a href="#about">About</a></li>
-              <li><a href="#contact">Contact</a></li>
-            </ul>
-          </div><!--/.nav-collapse -->
+          <div class="row">
+            <div class="span4 offset5">
+              <a class="brand" href="#">Curate your stuff</a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
     <div class="container">
-      <div class="row">
+      <div class="row" ng-controller="MyController">
+      <div class="span8 offset4">
+        <p class="lead">
+          A simple way to curate your stuff to share with others
+        </p>
+      </div>
         <div class="span11 offset1">
-        <input type="text" ng-model="name" placeholder="Name">
-        <input type="text" ng-model="msg" ng-keydown="addMessage($event)" placeholder="Message...">
-
-        <div id='messagesDiv'>
-          <div ng-repeat="msg in messages">
-            <ul class="thumbnails">
-              <li class="span4">
-                <div class="thumbnail">
-                  <img data-src="holder.js/300x200" alt="300x200" style="width: 300px; height: 200px;">
-                  <div class="caption">
-                    <h3>{{msg.from}}</h3>
-
-                    <p>{{msg.body}}</p>
-                    <p><a href="#" class="btn btn-primary">Action</a> <a href="#" class="btn">Action</a></p>
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </div>
+          <form class="form-inline" ng-submit="addMessage()">
+            <input type="text" ng-model="name" placeholder="Blender">
+            <input type="text" ng-model="msg" placeholder="http://ecx.images-amazon.com/images/I/31Z1MAH5AVL._SY300_.jpg">
+            <button class="btn btn-primary" type="submit">
+              Add your favorite item
+            </button>
+          </form>
         </div>
+        <div class="span12">
 
 
-        <div id="messagesDiv">
-          <div ng-repeat="msg in messages"><em>{{msg.from}}</em>: {{msg.body}}</div>
+
+          <div id='messagesDiv'>
+            <div ng-repeat="(id, msg) in messages">
+              <ul class="thumbnails">
+                <li class="span4">
+                  <div class="thumbnail">
+                    <div class="row">
+                      <div class="span2">
+                        <a href="{{msg.body}}"><h2 class="muted">{{msg.from}}</h2></a>
+                      </div>
+                      <div class="span1 pull-right">
+                        <button class="btn btn-info btn-small"><i class="icon-edit icon-white"></i></button>
+                        <button type="submit" ng-click="removeMessage(id)" class="btn btn-danger btn-small"><i class="icon-trash icon-white"></i></button>
+                      </div>
+                    </div>
+                    <img src="{{msg.body}}" alt="300x200" style="width: 300px; height: 200px;">
+                    <div class="caption">
+                      <p></p>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
         <script>
           var app = angular.module("myapp", ["firebase"]);
           function MyController($scope, $firebase) {
             var ref = new Firebase("https://blinding-fire-4569.firebaseio.com");
             $scope.messages = $firebase(ref);
-            $scope.addMessage = function(e) {
-              if (e.keyCode != 13) return;
-                $scope.messages.$add({from: $scope.name, body: $scope.msg});
-                $scope.msg = "";
-            }
+            $scope.addMessage = function() {
+              $scope.messages.$add({
+                from: $scope.name, body: $scope.msg
+              });
+              $scope.msg = "";
+            };
+
+            $scope.removeMessage = function(id) {
+              $scope.messages.$remove(id);
+            };
+
           }
         </script>
         </div>
